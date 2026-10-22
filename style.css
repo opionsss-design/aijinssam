@@ -92,3 +92,22 @@ dialog{font-size:18px}dialog h2{font-size:30px}dialog p,.npc p{font-size:18px;li
 #story-text{text-wrap:balance}
 @media(max-height:720px) and (orientation:portrait){#story-text{text-wrap:pretty}}
 @media(min-height:721px) and (orientation:portrait){body[data-scene="title"] .illustrated-cast{bottom:21.5%}}
+
+/* Center the learning stage; keep the island scenery and cast around it. */
+dialog.conversation{inset:0;margin:auto;width:min(840px,calc(100vw - 48px));max-height:88dvh;padding:32px 36px;border-radius:26px;overflow-y:auto;overscroll-behavior:contain}
+dialog.conversation::backdrop{background:#233e4b18;backdrop-filter:none}
+body[data-scene="encounter"] #storybook-scene{background-size:cover;background-position:center}
+body[data-scene="encounter"] .illustrated-cast{inset:0;width:100%;height:100%;max-width:none;aspect-ratio:auto;transform:none;display:block;filter:none}
+body[data-scene="encounter"] .illustrated-actor{position:absolute;bottom:3%;width:clamp(120px,calc((100vw - 900px)/2),270px);height:auto;aspect-ratio:656/1199;filter:drop-shadow(0 10px 12px #61482c24)}
+body[data-scene="encounter"] .illustrated-actor.hero{left:0}
+body[data-scene="encounter"] .illustrated-actor.mentor{right:0}
+.conversation .npc{display:flex;align-items:flex-start;gap:14px}
+.conversation .npc p{margin:0;flex:1;min-width:0}
+.conversation .npc-avatar{display:inline-flex;flex:none;width:48px;height:48px;align-items:center;justify-content:center;background:#fff8e9;border-radius:50%;font-size:28px}
+@media(max-width:1099px){body[data-scene="encounter"] .illustrated-cast{display:none}}
+@media(max-width:740px){
+ dialog.conversation{inset:0;margin:auto;width:94vw;max-height:90dvh;padding:26px 20px;border-radius:22px}
+ .conversation .npc{gap:9px;padding:12px}.conversation .npc-avatar{width:36px;height:36px;font-size:23px}
+ .conversation .warehouse-row{gap:8px}.conversation .warehouse{min-height:120px;padding:10px}
+}
+@media(max-height:550px){dialog.conversation{inset:0;margin:auto;width:min(840px,94vw);max-height:92dvh;padding:24px}.conversation .close{top:7px;right:7px}}

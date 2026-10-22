@@ -18,3 +18,7 @@ for (const island of window.LESSONS) {
   island.visualScale = SAILING.islandScale;
   island.harbor = {x:island.x,y:island.y+island.r+SAILING.harborOffset};
 }
+
+// 섬별 학습 배경. 첫 섬은 기본 항구 배경을 사용합니다.
+const islandBackgrounds = [null, 'assets/islands/export-harbor.png', 'assets/islands/resource-workshop.png', 'assets/islands/world-market.png', 'assets/islands/trade-council.png', 'assets/islands/cooperation-garden.png'];
+window.LESSONS.forEach((island, index) => { island.background = islandBackgrounds[index]; });

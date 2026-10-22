@@ -17,6 +17,13 @@ mkdirSync('artifacts',{recursive:true});
   await page.locator('#skip-story').click();await page.screenshot({path:'artifacts/title.png'});
   await page.locator('#start').click();await page.waitForFunction(()=>TradeVoyage.getNearbyIsland()===0);await page.screenshot({path:'artifacts/ocean.png'});
   await page.locator('#enter').click();await page.locator('#talk-next').click();await page.screenshot({path:'artifacts/conversation.png'});await page.locator('#talk-next').click();await page.screenshot({path:'artifacts/quiz.png'});
+  const islandArt=await page.evaluate(async()=>{
+    const urls=LESSONS.map(l=>l.background).filter(Boolean);
+    await Promise.all(urls.map(async url=>{const img=new Image();img.src=url;await img.decode();}));
+    Voyage3D.setScene('encounter',{npcIndex:1,speaker:'npc'});
+    return{count:urls.length,embedded:urls.every(url=>url.startsWith('data:image/png;base64,')),active:document.querySelector('#storybook-scene').style.backgroundImage.includes(urls[0])};
+  });
+  assert.deepEqual(islandArt,{count:5,embedded:true,active:true},'all new island images are embedded and decoded offline');
   assert.equal(await page.locator('[data-answer]').count(),3);assert(requests.every(u=>u===url||u.startsWith('data:')),'standalone runs entirely offline');assert.deepEqual(errors,[]);
   console.log('PASS: downloaded single-file HTML runs 3D prologue, title, sailing and NPC quiz as one local document without external resource requests.');
  }finally{await browser.close();}

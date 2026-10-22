@@ -2,7 +2,19 @@
 'use strict';
 (() => {
   const T = window.THREE, CFG=window.SAILING;
-  const api = { supported: false, mode: 'world', setScene(mode, options={}) { this.mode=mode;document.body.dataset.scene=mode;document.body.dataset.speaker=options.speaker||'hero'; }, render() {}, screenToWorld() { return null; } };
+  function applySceneMetadata(mode, options={}) {
+    document.body.dataset.scene=mode;
+    document.body.dataset.speaker=options.speaker||'hero';
+    const island=mode==='encounter' ? window.LESSONS[options.npcIndex] : null;
+    const backdrop=document.querySelector('#storybook-scene');
+    if(island) document.body.dataset.island=String(options.npcIndex);
+    else delete document.body.dataset.island;
+    if(backdrop) {
+      if(island?.background) backdrop.style.backgroundImage=`url("${island.background}")`;
+      else backdrop.style.removeProperty('background-image');
+    }
+  }
+  const api = { supported: false, mode: 'world', setScene(mode, options={}) { this.mode=mode;applySceneMetadata(mode,options); }, render() {}, screenToWorld() { return null; } };
   window.Voyage3D = api;
   if (!T) { document.body.classList.add('no-webgl'); return; }
   let renderer;
@@ -242,7 +254,7 @@
     renderer.shadowMap.needsUpdate=true;api.mode=mode;speaker=options.speaker||'hero';reaction=options.reaction||'neutral';document.body.dataset.speaker=speaker;document.body.dataset.reaction=reaction;
     const npc=options.npcIndex??-1;
     if(npc!==lastNPC){pair.remove(companion);disposeCharacter(companion);lastNPC=npc;const elder=npc<0||npc===0||npc===5;companion=character({elder,color:['#8ebc9c','#ba99c7','#b9b995','#e0ac78','#a5bdb0','#e9d49b'][Math.max(0,npc)],variant:Math.max(0,npc)});companion.position.x=1.05;companion.rotation.y=-.13;pair.add(companion);}
-    document.body.dataset.scene=mode;
+    applySceneMetadata(mode,options);
   };
   api.react=value=>{reaction=value;document.body.dataset.reaction=value;};
   api.screenToWorld=(x,y)=>{ray.setFromCamera(new T.Vector2(x/innerWidth*2-1,-y/innerHeight*2+1),worldCam);if(ray.ray.intersectPlane(plane,hit))return{x:hit.x,y:hit.z};return null;};
