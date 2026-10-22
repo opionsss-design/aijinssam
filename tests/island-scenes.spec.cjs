@@ -14,7 +14,7 @@ const fs=require('node:fs');
    for(let i=0;i<6;i++){
     await page.evaluate(i=>{const s=TradeVoyage.getState(),l=LESSONS[i];s.x=l.harbor.x;s.y=l.harbor.y;s.done=[0,1,2,3,4].filter(v=>v!==i);sessionStorage.setItem('fixture-state',JSON.stringify(s));},i);
     await page.reload();await page.locator('#start').click();await page.locator('#enter').click();
-    await page.locator('#talk-next').click();await page.locator('#talk-next').click();
+    await page.locator('#talk-next').click();await page.locator('#talk-next').click();await page.locator('#talk-next').click();
     const result=await page.evaluate(async()=>{
      const b=document.querySelector('#modal').getBoundingClientRect(),bg=getComputedStyle(document.querySelector('#storybook-scene')).backgroundImage;
      const image=new Image();image.src=bg.slice(5,-2);await image.decode();

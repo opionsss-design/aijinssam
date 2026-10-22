@@ -111,3 +111,58 @@ body[data-scene="encounter"] .illustrated-actor.mentor{right:0}
  .conversation .warehouse-row{gap:8px}.conversation .warehouse{min-height:120px;padding:10px}
 }
 @media(max-height:550px){dialog.conversation{inset:0;margin:auto;width:min(840px,94vw);max-height:92dvh;padding:24px}.conversation .close{top:7px;right:7px}}
+
+/* Illustrated chapters: story → hands-on game → eight-question quiz. */
+dialog.conversation{width:min(920px,calc(100vw - 48px));padding:26px 32px;background:#fff8ecfa}
+.chapter-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 32px 16px 0}
+.chapter-nav>button{padding:8px 12px;font-size:15px;background:#e2eeeb;color:#365e6c}
+.chapter-nav ol{display:flex;gap:5px;margin:0;padding:0;list-style:none;flex-wrap:wrap}
+.chapter-nav li{font-family:'Jua',sans-serif;font-size:16px;padding:7px 15px;border-radius:18px;color:#71847e;background:#eaf0e8}
+.chapter-nav li[aria-current]{color:white;background:#3686a0}
+.chapter-illustration{position:relative;height:230px;overflow:hidden;background-color:#a8d7d8;background-size:cover;background-position:center 57%;margin:0 0 20px;border:3px solid #fff;border-radius:18px;box-shadow:0 4px 15px #34536a15}
+.chapter-hero{position:absolute;left:5%;bottom:-12%;height:113%;aspect-ratio:656/1199;overflow:hidden;filter:drop-shadow(0 4px 5px #304e5344)}
+.chapter-hero img{display:block;height:100%;width:200%;max-width:none}
+.chapter-illustration figcaption{position:absolute;bottom:12px;right:12px;max-width:67%;padding:8px 14px;background:#fff8e8ec;border-radius:12px;color:#36576a;font-size:16px;word-break:keep-all}
+.conversation[data-stage="quiz"] .chapter-illustration,.conversation[data-stage="game"] .chapter-illustration,.conversation[data-stage="reward"] .chapter-illustration{height:125px}
+.conversation[data-stage="quiz"] .chapter-hero,.conversation[data-stage="game"] .chapter-hero{height:150%;bottom:-35%}
+.conversation .npc p{word-break:keep-all}.conversation .spoken-text{font-size:23px!important;line-height:1.8!important}
+.quiz-progress{width:100%;height:12px;accent-color:#329d9c;margin:6px 0 14px}
+.route-board,.negotiation-board,.collection-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.route-board button{background:#e8f3ed;border:2px solid #d2dfd4;color:#365869;padding:15px;text-align:left;min-height:85px;transition:transform .15s}
+.route-board button[aria-pressed="true"]{background:#fff0c4;border-color:#d69b31;transform:translateY(-3px)}
+.route-board small{display:block;font-size:16px;margin-top:7px}
+.negotiation-board article,.collection-grid article{background:#e8f1e7;padding:18px;border-radius:16px;line-height:1.8}
+.price-slider{display:block;background:#f5ebd4;padding:16px;border-radius:12px;margin:16px 0}.price-slider output{font-family:'Jua',sans-serif;font-size:26px;color:#337e91}.price-slider input{display:block;width:100%;margin-top:18px;accent-color:#358da2;min-height:28px}
+.safety-check{display:flex;align-items:center;gap:12px;padding:14px;background:#e9f1e7;border-radius:12px}.safety-check input{width:24px;height:24px;flex:none;accent-color:#358da2}
+.collection-grid small{display:block;color:#647d7c;margin-top:8px;font-size:14px}.collection-grid article:not(.collected){background:#ecece6;color:#8c968c}.collection-grid .collected{border:2px solid #d8b25b;background:#fff1c9}
+.collection-bonus{padding:18px;background:linear-gradient(120deg,#ffebaa,#fff6d6);border:1px solid #dfbe70;border-radius:15px;line-height:1.8;color:#785a2b;margin:16px 0}
+dialog.finale-panel{width:min(960px,94vw);background:#fff9ee;animation:chapter-arrive .35s ease-out}
+.finale-visual{height:220px;border:3px solid white;border-radius:18px;background-size:cover;background-position:center;position:relative;margin:0 0 22px;overflow:hidden}
+.finale-visual span{position:absolute;left:20px;bottom:18px;font-family:'Jua',sans-serif;font-size:24px;color:#fff9e8;padding:10px 18px;border-radius:14px;background:#28586bbf;letter-spacing:1px}
+body[data-finale] .illustrated-cast{display:none!important}
+body[data-finale="success"] #storybook-scene:after{background:radial-gradient(ellipse at center,#fff3ad33,#e1a84544)}
+body[data-finale="success"] .finale-visual{height:270px;border-color:#f4d282}
+body[data-finale="success"] .finale-visual span{background:#927020dc}
+body[data-finale="retry"] .finale-visual{filter:saturate(.6);height:160px}
+@keyframes chapter-arrive{from{opacity:.5;translate:0 16px}to{opacity:1;translate:0 0}}
+@media(min-width:1100px){body[data-scene="encounter"] .illustrated-actor{width:clamp(80px,calc((100vw - 980px)/2),250px)}}
+@media(max-width:740px){
+ dialog.conversation{width:94vw;padding:22px 17px;max-height:90dvh}.chapter-nav{gap:6px;margin-right:22px;margin-bottom:12px}.chapter-nav>button{font-size:12px;padding:7px}.chapter-nav li{font-size:13px;padding:6px 9px}.chapter-nav ol{gap:3px}
+ .chapter-illustration{height:175px;margin-bottom:15px;border-radius:13px}.chapter-illustration figcaption{font-size:13px;max-width:70%;padding:6px 9px;right:7px;bottom:8px}.chapter-hero{left:0}
+ .conversation[data-stage="quiz"] .chapter-illustration,.conversation[data-stage="game"] .chapter-illustration,.conversation[data-stage="reward"] .chapter-illustration{height:85px}.conversation[data-stage="quiz"] .chapter-illustration figcaption,.conversation[data-stage="game"] .chapter-illustration figcaption{font-size:12px}
+ .conversation .spoken-text{font-size:20px!important}.route-board{gap:8px}.route-board button{padding:12px;font-size:15px}.route-board small{font-size:14px}.collection-grid{grid-template-columns:1fr}.negotiation-board article{font-size:15px;padding:13px}.collection-bonus{font-size:16px;padding:14px}
+ .finale-visual{height:160px}.finale-visual span{font-size:17px;left:10px;bottom:10px;padding:8px 12px}body[data-finale="success"] .finale-visual{height:190px}
+}
+@media(max-height:550px){dialog.conversation{max-height:92dvh}.chapter-illustration{height:110px}.conversation[data-stage="quiz"] .chapter-illustration,.conversation[data-stage="game"] .chapter-illustration{height:70px}.finale-visual{height:110px}body[data-finale="success"] .finale-visual{height:130px}}
+@media(prefers-reduced-motion:reduce){dialog.finale-panel{animation:none}.route-board button{transition:none}}
+@media(max-width:740px){
+ dialog.conversation:has(#cards) .chapter-illustration{height:60px}
+ dialog.conversation:has(#cards) .npc p{font-size:0;line-height:1}
+ dialog.conversation:has(#cards) .npc p b{font-size:15px;line-height:1.4}
+ dialog.conversation:has(#cards) .npc{padding:9px;margin:10px 0;align-items:center}
+ dialog.conversation:has(#cards) .goods{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+ dialog.conversation:has(#cards) .good{font-size:14px;padding:10px;line-height:1.5;text-align:left}
+}
+/* Leave a clear gap between the chapter indicators and the close button. */
+.chapter-nav{margin-right:42px}
+@media(max-width:740px){.chapter-nav{margin-right:40px}}

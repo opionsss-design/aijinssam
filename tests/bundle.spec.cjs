@@ -16,7 +16,7 @@ mkdirSync('artifacts',{recursive:true});
   await page.locator('#story-next').click();await page.waitForFunction(()=>document.querySelector('#story-text').textContent===PROLOGUE[1].text);await page.screenshot({path:'artifacts/hero-prologue.png'});
   await page.locator('#skip-story').click();await page.screenshot({path:'artifacts/title.png'});
   await page.locator('#start').click();await page.waitForFunction(()=>TradeVoyage.getNearbyIsland()===0);await page.screenshot({path:'artifacts/ocean.png'});
-  await page.locator('#enter').click();await page.locator('#talk-next').click();await page.screenshot({path:'artifacts/conversation.png'});await page.locator('#talk-next').click();await page.screenshot({path:'artifacts/quiz.png'});
+  await page.locator('#enter').click();await page.locator('#talk-next').click();await page.screenshot({path:'artifacts/conversation.png'});await page.locator('#talk-next').click();await page.locator('#talk-next').click();for(const k of [0,2,4])await page.locator(`[data-route="${k}"]`).click();await page.locator('#route-check').click();await page.locator('#start-quiz').click();await page.screenshot({path:'artifacts/quiz.png'});
   const islandArt=await page.evaluate(async()=>{
     const urls=LESSONS.map(l=>l.background).filter(Boolean);
     await Promise.all(urls.map(async url=>{const img=new Image();img.src=url;await img.decode();}));

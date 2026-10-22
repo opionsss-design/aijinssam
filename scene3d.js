@@ -268,8 +268,8 @@
       const off=height*.15/zoom/.74;worldCam.position.set(cam.x,720,cam.y+650-off);worldCam.lookAt(cam.x,0,cam.y-off);worldCam.updateMatrixWorld();
       const p=waterGeo.attributes.position;for(let k=0;k<p.count;k++){p.setY(k,baseWater[k*3+1]+Math.sin(baseWater[k*3]*.018+time)*.8+Math.cos(baseWater[k*3+2]*.016+time*1.2)*.6);}p.needsUpdate=true;
       ship.position.set(boat.x,Math.sin(time*2)*1.4,boat.y);ship.rotation.y=-boat.angle-Math.PI/2;ship.rotation.z=Math.sin(time*2)*.025;
-      hull.material=mat(state.done.includes(5)?'#dcb958':state.upgrades.includes('hull')?'#468d95':'#9c633d');
-      sail.material=mat(state.done.includes(5)?'#ffe5a0':state.upgrades.includes('sail')?'#ee9b78':'#fff3d1',.8,{side:T.DoubleSide});flag.visible=state.upgrades.includes('flag')||state.done.includes(5);
+      hull.material=mat(state.finale?.completed?'#dcb958':state.upgrades.includes('hull')?'#468d95':'#9c633d');
+      sail.material=mat(state.finale?.completed?'#ffe5a0':state.upgrades.includes('sail')?'#ee9b78':'#fff3d1',.8,{side:T.DoubleSide});flag.visible=state.upgrades.includes('flag')||state.finale?.completed;
       rings.forEach((r,i)=>{r.material.opacity=near===i?.75+Math.sin(time*3)*.2:.35;r.scale.setScalar(1+Math.sin(time*2+i)*.04);});
       while(chestObjects.length<treasures.length){const c=new T.Group();box(c,'#ae7d45',[0,5,0],[24,14,17]);const lid=cyl(c,'#d3a465',[0,13,0],12,12,18,8);lid.rotation.z=Math.PI/2;box(c,'#f7d67e',[0,11,9],[4,8,2]);world.add(c);chestObjects.push(c);}
       chestObjects.forEach((c,i)=>{c.visible=!state.treasures.includes(i);c.position.set(treasures[i].x,Math.sin(time*2+i)*2,treasures[i].y);c.rotation.z=Math.sin(time+i)*.08;});
