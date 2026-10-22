@@ -5,7 +5,7 @@
 <canvas id="world3d" aria-label="입체 캐릭터와 3D 섬이 있는 무역 탐험 세계"></canvas>
 <canvas id="sea" aria-label="방향키, WASD 또는 화면을 눌러 배를 조종하는 탐험 바다"></canvas>
 <header><a class="brand" href="./">⚓ <span>무역왕의 항해<small>세계 무역 탐험대</small></span></a><div class="stats"><span>🪙 <b id="coins">0</b><small>무역 코인</small></span><span>📦 <b id="cargo">0</b><small>획득 상품</small></span><span>🏝️ <b id="progress">0 / 6</b><small>탐험 완료</small></span></div><button id="menu" aria-label="항해 메뉴 열기">☰</button></header>
-<aside class="map-panel"><div><b>탐험 지도</b><span>COMPASS N ↑</span></div><canvas id="map" width="220" height="150" aria-label="6개 섬과 현재 배 위치 미니맵"></canvas><small>점선 원 가까이에서 정박해요</small></aside>
+<aside class="map-panel"><div><b>탐험 지도</b><span>COMPASS N ↑</span></div><canvas id="map" width="220" height="150" aria-label="대한민국 출발 항구, 6개 섬과 현재 배 위치 미니맵"></canvas><small>점선 원 가까이에서 정박해요</small></aside>
 <section class="quest"><span class="eyebrow">CAPTAIN'S LOG · 항해 일지</span><h2 id="quest-title">첫 번째 섬으로 출발!</h2><p id="quest-text">가까운 초록 섬에서 무역 탐험을 시작해요.</p><button id="journal">6개 섬 살펴보기 ↗</button></section>
 <div class="bottom-hint">✦ 드넓은 바다, 나만의 항로 <span>WASD / 방향키 · 바다를 누르고 이동</span></div>
 <div id="joystick" aria-label="배 이동 조이스틱"><div id="stick"></div></div>
@@ -13,5 +13,5 @@
 <div id="toast" role="status"></div><div id="confetti"></div>
 <dialog id="modal"><button id="close" class="close" aria-label="닫고 바다로 돌아가기">×</button><div id="modal-content"></div></dialog>
 <section id="story-screen" hidden aria-label="항해 이야기와 게임 시작 화면"></section>
-<script src="vendor/three.min.js"></script><script src="missions.js"></script><script src="story-data.js"></script><script src="chapter-data.js"></script><script src="scene3d.js"></script><script src="game.js"></script>
+<script src="vendor/three.min.js"></script><script src="missions.js"></script><script src="story-data.js"></script><script src="chapter-data.js"></script><script src="korea-map.js"></script><script src="scene3d.js"></script><script src="game.js"></script>
 </body></html>

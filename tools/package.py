@@ -7,7 +7,7 @@ root = Path(__file__).resolve().parents[1]
 out = root.parent
 html = (root / 'index.html').read_text()
 html = html.replace('<link rel="stylesheet" href="style.css">', '<style>\n' + (root / 'style.css').read_text() + '\n</style>')
-for filename in ['vendor/three.min.js', 'missions.js', 'story-data.js', 'chapter-data.js', 'scene3d.js', 'game.js']:
+for filename in ['vendor/three.min.js', 'missions.js', 'story-data.js', 'chapter-data.js', 'korea-map.js', 'scene3d.js', 'game.js']:
     source = (root / filename).read_text().replace('</script', '<\\/script')
     html = html.replace(f'<script src="{filename}"></script>', '<script>\n' + source + '\n</script>')
 island_assets = sorted((root/'assets/islands').glob('*.png'))
@@ -25,6 +25,6 @@ for name in ['무역왕의_항해_동화풍_바로실행.html', '무역왕의_�
     (out / name).write_text(html)
 (root/'play.html').write_text(html)
 with zipfile.ZipFile(out / '무역왕의_항해.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
-    for filename in ['index.html', 'play.html', '.nojekyll', 'assets/fonts/Jua-Regular.woff2', 'assets/fonts/GowunDodum-Regular.woff2', 'assets/fonts/jua-OFL.txt', 'assets/fonts/gowundodum-OFL.txt', 'style.css', 'missions.js', 'story-data.js', 'chapter-data.js', 'scene3d.js', 'game.js', 'README.md', 'vendor/three.min.js', 'vendor/THREE-LICENSE.txt', 'assets/sailor-cast.png', 'assets/harbor-storybook.png', 'tests/game.spec.cjs', 'tests/story.spec.cjs', 'tests/resilience.spec.cjs', 'tests/bundle.spec.cjs', 'tests/size-and-text.spec.cjs', 'tools/package.py', 'tests/island-scenes.spec.cjs', 'tests/chapters.spec.cjs', 'tests/navigation.spec.cjs'] + ['assets/islands/'+p.name for p in island_assets]:
+    for filename in ['index.html', 'play.html', '.nojekyll', 'assets/fonts/Jua-Regular.woff2', 'assets/fonts/GowunDodum-Regular.woff2', 'assets/fonts/jua-OFL.txt', 'assets/fonts/gowundodum-OFL.txt', 'style.css', 'missions.js', 'story-data.js', 'chapter-data.js', 'korea-map.js', 'scene3d.js', 'game.js', 'README.md', 'vendor/three.min.js', 'vendor/THREE-LICENSE.txt', 'assets/sailor-cast.png', 'assets/harbor-storybook.png', 'tests/game.spec.cjs', 'tests/story.spec.cjs', 'tests/resilience.spec.cjs', 'tests/bundle.spec.cjs', 'tests/size-and-text.spec.cjs', 'tools/package.py', 'tests/island-scenes.spec.cjs', 'tests/chapters.spec.cjs', 'tests/navigation.spec.cjs', 'tests/korea-port.spec.cjs'] + ['assets/islands/'+p.name for p in island_assets]:
         archive.write(root / filename, '무역왕의_항해/' + filename)
 print('Created offline 3D HTML and complete source ZIP.')

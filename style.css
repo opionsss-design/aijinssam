@@ -166,3 +166,20 @@ body[data-finale="retry"] .finale-visual{filter:saturate(.6);height:160px}
 /* Leave a clear gap between the chapter indicators and the close button. */
 .chapter-nav{margin-right:42px}
 @media(max-width:740px){.chapter-nav{margin-right:40px}}
+/* Keep the ship and Korean coastline clear of the departure card on phones. */
+@media(max-width:740px),(max-height:550px){
+ #dock.home-port{top:92px;bottom:auto;left:14px;transform:none;min-width:0;width:calc(100vw - 195px);max-width:210px;padding:12px}
+ #dock.home-port #dock-title{font-size:19px;line-height:1.45;display:block}
+ #dock.home-port p{display:none}
+ #dock.home-port #enter{font-size:16px;padding:9px 10px;margin-top:9px;width:100%;white-space:normal}
+}
+@media(max-height:550px){#dock.home-port{width:205px}body:has(#dock.home-port:not([hidden])) .quest{display:none}}
+@media(min-width:741px) and (min-height:551px){
+ #dock.home-port{top:125px;bottom:auto;left:28px;transform:none;min-width:0;width:250px;padding:15px}
+ #dock.home-port #dock-title{font-size:22px;line-height:1.5;display:block}
+ #dock.home-port p{display:none}
+ #dock.home-port #enter{font-size:18px;padding:11px;margin-top:12px;width:100%}
+}
+body:has(#dock.home-port:not([hidden])) .quest{display:none}
+@media(min-width:741px) and (min-height:551px){#dock.home-port{left:20px;width:180px}#dock.home-port #dock-title{font-size:20px}}
+#dock.home-port #dock-title{word-break:keep-all}

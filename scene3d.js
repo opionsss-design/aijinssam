@@ -200,6 +200,46 @@
     drawLabel();document.fonts.ready.then(drawLabel);
     const sprite=new T.Sprite(new T.SpriteMaterial({map:texture,transparent:true,depthTest:false}));sprite.position.set(0,70,-r*.35);sprite.scale.set(440/l.visualScale,92/l.visualScale,1);g.add(sprite);labelSprites.push(sprite);
   }
+  // The home harbor is independent of the six learning islands.
+  const HOME=window.HOME_PORT,homeGroup=new T.Group();world.add(homeGroup);
+  HOME.land.forEach((polygon,index)=>{
+    const shape=new T.Shape();polygon.forEach(([x,z],k)=>k?shape.lineTo(x,-z):shape.moveTo(x,-z));shape.closePath();
+    const coast=new T.ExtrudeGeometry(shape,{depth:22,bevelEnabled:false,steps:1});coast.rotateX(-Math.PI/2);
+    mesh(homeGroup,coast,'#e4d3a1',[0,-10,0]);
+    const grass=new T.ShapeGeometry(shape);grass.rotateX(-Math.PI/2);mesh(homeGroup,grass,index===0?'#a9c58a':'#b8cf99',[0,13,0]);
+  });
+  function homeLabel(title,subtitle,x,z,width=260){
+    const c=document.createElement('canvas');c.width=768;c.height=160;const c2=c.getContext('2d'),texture=new T.CanvasTexture(c);texture.encoding=T.sRGBEncoding;
+    function paint(){c2.clearRect(0,0,768,160);c2.fillStyle='#255967e8';c2.fillRect(5,5,758,150);c2.fillStyle='#fff7df';c2.textAlign='center';c2.font=(subtitle?'70':'104')+'px Jua, sans-serif';c2.fillText(title,384,subtitle?77:113);c2.font='29px "Gowun Dodum",sans-serif';c2.fillText(subtitle,384,122);texture.needsUpdate=true;}
+    paint();document.fonts.ready.then(paint);const sprite=new T.Sprite(new T.SpriteMaterial({map:texture,transparent:true,depthTest:false,toneMapped:false}));sprite.position.set(x,80,z);sprite.scale.set(width,width*160/768,1);homeGroup.add(sprite);
+  }
+  homeLabel('대한민국','세계 무역 탐험의 출발지',640,430,330);
+  homeLabel('부산항','배를 직접 움직여 출항해요',HOME.harbor.x+70,HOME.harbor.y-55,320);
+  for(const city of HOME.cities){
+    if(city.name==='부산항')continue;
+    cyl(homeGroup,'#df8a58',[city.x,20,city.y],5,5,12,10);
+    if(city.name==='서울')homeLabel('서울','',city.x-35,city.y-25,185);
+    else homeLabel(city.name,'',city.x+(city.name==='독도'?-95:city.name==='울릉도'?-20:0),city.y+(city.name==='독도'?50:city.name==='울릉도'?-70:-45),200);
+  }
+  for(const [x,z,h] of [[675,440,65],[710,505,85],[665,555,60],[610,635,52]]){
+    mesh(homeGroup,new T.ConeGeometry(38,h,5),'#7ca080',[x,13+h/2,z]);
+  }
+  house(homeGroup,HOME.port.x-90,HOME.port.y-50,1.2,'#f6e8c7','#7299a9');
+  house(homeGroup,HOME.port.x-15,HOME.port.y-90,.9,'#f6e8c7','#d38970');
+  const pier=new T.Group();pier.position.set(HOME.port.x,0,HOME.port.y);pier.rotation.y=Math.atan2(HOME.harbor.x-HOME.port.x,HOME.harbor.y-HOME.port.y);homeGroup.add(pier);
+  box(pier,'#b78b5c',[0,9,104],[70,15,235]);for(let z=-5;z<=216;z+=13)box(pier,'#e2bc83',[0,18,z],[72,3,10]);
+  for(const x of [-34,34])for(const z of [15,105,210])cyl(pier,'#987347',[x,13,z],5,5,36,10);
+  for(const [x,z,color] of [[-65,10,'#5594a5'],[-95,-20,'#d3916f'],[-65,-55,'#8ea688']])box(pier,color,[x,28,z],[48,28,24]);
+  cyl(pier,'#ddb159',[-95,69,-25],4,5,104,8);box(pier,'#ddb159',[-61,123,-25],[85,6,7]);
+  cyl(pier,'#eee5c9',[50,53,5],13,19,75,16);cyl(pier,'#cb7e66',[50,61,5],14,15,15,16);cyl(pier,'#557e8b',[50,96,5],18,18,14,16);mesh(pier,new T.ConeGeometry(25,19,12),'#dc9970',[50,112,5]);
+  // A locally drawn Korean flag beside the pier.
+  const flagCanvas=document.createElement('canvas');flagCanvas.width=180;flagCanvas.height=120;const fc=flagCanvas.getContext('2d');fc.fillStyle='#fff';fc.fillRect(0,0,180,120);
+  fc.fillStyle='#ce3852';fc.beginPath();fc.arc(90,60,27,Math.PI,0);fc.fill();fc.fillStyle='#28619a';fc.beginPath();fc.arc(90,60,27,0,Math.PI);fc.fill();
+  fc.fillStyle='#ce3852';fc.beginPath();fc.arc(76.5,60,13.5,0,Math.PI*2);fc.fill();fc.fillStyle='#28619a';fc.beginPath();fc.arc(103.5,60,13.5,0,Math.PI*2);fc.fill();
+  function trigram(x,y,angle,broken){fc.save();fc.translate(x,y);fc.rotate(angle);fc.fillStyle='#253541';for(let row=0;row<3;row++){const yy=(row-1)*7;if(broken[row]){fc.fillRect(-14,yy-2,11,4);fc.fillRect(3,yy-2,11,4);}else fc.fillRect(-14,yy-2,28,4);}fc.restore();}
+  trigram(42,30,-Math.PI/4,[false,false,false]);trigram(138,90,-Math.PI/4,[true,true,true]);trigram(138,30,Math.PI/4,[true,false,true]);trigram(42,90,Math.PI/4,[false,true,false]);
+  const flagTexture=new T.CanvasTexture(flagCanvas);cyl(pier,'#8b8776',[-35,66,150],2,2,96,8);mesh(pier,new T.PlaneGeometry(60,40),'#fff',[-5,93,150],[1,1,1],new T.MeshLambertMaterial({map:flagTexture,side:T.DoubleSide}));
+
   window.LESSONS.forEach(island);
   const ship=new T.Group();ship.scale.setScalar(CFG.boatScale);world.add(ship);
   const hull=ball(ship,'#9c633d',[0,8,0],[21,13,40]);
@@ -288,5 +328,10 @@
       floating.forEach((p,i)=>{p.position.y+=Math.sin(time*.7+i)*.0015;});renderer.render(theatre,stageCam);
     }
   };
-  api.getDiagnostics=()=>({supported:true,scene:api.mode,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,characters:2,islands:islandGroups.length,boatScale:ship.scale.x,islandScale:CFG.islandScale});
+  function homeScreenBounds(){
+    const points=HOME.land.flat().map(([x,z])=>new T.Vector3(x,13,z).project(worldCam));
+    return {left:Math.min(...points.map(p=>(p.x+1)*width/2)),right:Math.max(...points.map(p=>(p.x+1)*width/2)),top:Math.min(...points.map(p=>(1-p.y)*height/2)),bottom:Math.max(...points.map(p=>(1-p.y)*height/2))};
+  }
+  api.worldToScreen=(x,z,elevation=15)=>{const p=new T.Vector3(x,elevation,z).project(worldCam);return{x:(p.x+1)*width/2,y:(1-p.y)*height/2};};
+  api.getDiagnostics=()=>({supported:true,scene:api.mode,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,characters:2,islands:islandGroups.length,homeCountry:HOME.country,homeCoastlines:HOME.land.length,homeScreenBounds:homeScreenBounds(),boatScale:ship.scale.x,islandScale:CFG.islandScale});
 })();
