@@ -1,7 +1,7 @@
 /* Local, procedural Three.js scenes. No models, textures or fonts are fetched. */
 'use strict';
 (() => {
-  const T = window.THREE;
+  const T = window.THREE, CFG=window.SAILING;
   const api = { supported: false, mode: 'world', setScene(mode, options={}) { this.mode=mode;document.body.dataset.scene=mode;document.body.dataset.speaker=options.speaker||'hero'; }, render() {}, screenToWorld() { return null; } };
   window.Voyage3D = api;
   if (!T) { document.body.classList.add('no-webgl'); return; }
@@ -150,16 +150,16 @@
     root.userData={body,head,arms,phase:variant*1.3,elder};return root;
   }
 
-  const world = new T.Scene(); world.background=new T.Color('#8ecbd1');world.fog=new T.Fog('#8ecbd1',2000,4200);lighting(world);
+  const world = new T.Scene(); world.background=new T.Color('#8ecbd1');world.fog=new T.Fog('#8ecbd1',4000,9000);lighting(world);
   const worldCam=new T.OrthographicCamera(-800,800,500,-500,1,4500);
   const waterGeo=new T.PlaneGeometry(7000,7000,64,64);waterGeo.rotateX(-Math.PI/2);
   const waterMat=new T.MeshPhongMaterial({color:'#278eaa',specular:'#174a5c',shininess:22});waterMat.color.convertSRGBToLinear();
-  const water=mesh(world,waterGeo,'#39b4bd',[1250,-2,1100],[1,1,1],waterMat);water.receiveShadow=true;
+  const water=mesh(world,waterGeo,'#39b4bd',[CFG.width/2,-2,CFG.height/2],[1,1,1],waterMat);water.receiveShadow=true;
   const baseWater=Float32Array.from(waterGeo.attributes.position.array);
   const islandGroups=[],rings=[],labelSprites=[];
   function island(l,i){
     const g=new T.Group();g.position.set(l.x,0,l.y);world.add(g);islandGroups.push(g);
-    const r=l.r;
+    const r=l.r/l.visualScale;g.scale.setScalar(l.visualScale);
     const base=mesh(g,new T.CylinderGeometry(r*.96,r*1.04,42,48),'#a5977b',[0,-11,0]);
     const sand=mesh(g,new T.CylinderGeometry(r*.94,r,18,64),'#f3dca0',[0,13,0]);
     const grass=mesh(g,new T.CylinderGeometry(r*.82,r*.91,12,64),l.color,[0,23,0]);
@@ -179,11 +179,17 @@
     for(let j=0;j<8;j++){const a=j*2.4+i,rr=r*(.55+(j%3)*.08),x=Math.cos(a)*rr,z=Math.sin(a)*rr;ball(g,j%2?'#f1d38d':'#edd5b8',[x,31,z],[2.6,2.1,2.6]);}
     if(i===0||i===3){const x=r-30,z=66;cyl(g,'#fff0d3',[x,60,z],12,17,80);cyl(g,'#db7e67',[x,65,z],13,14,18);cyl(g,'#557d89',[x,105,z],16,16,15);mesh(g,new T.ConeGeometry(22,20,12),'#d78b68',[x,122,z]);ball(g,'#fff0b0',[x,105,z],[10,5,10]);}
     // Labels are texture sprites generated locally with the browser canvas.
-    const c=document.createElement('canvas');c.width=512;c.height=96;const c2=c.getContext('2d');c2.font='700 30px sans-serif';c2.textAlign='center';c2.fillStyle='#174956dd';c2.beginPath();c2.moveTo(32,2);c2.lineTo(480,2);c2.quadraticCurveTo(510,2,510,26);c2.lineTo(510,72);c2.quadraticCurveTo(510,94,480,94);c2.lineTo(32,94);c2.quadraticCurveTo(2,94,2,70);c2.lineTo(2,25);c2.quadraticCurveTo(2,2,32,2);c2.fill();c2.shadowBlur=0;c2.fillStyle='#fffbed';c2.fillText('0'+(i+1)+' '+l.name,256,42);c2.font='20px sans-serif';c2.fillText(i===5?'상생의 항로':l.reward+' 무역 코인',256,74);
-    const sprite=new T.Sprite(new T.SpriteMaterial({map:new T.CanvasTexture(c),transparent:true,depthTest:false}));sprite.position.set(0,164,-r-12);sprite.scale.set(290,54,1);g.add(sprite);labelSprites.push(sprite);
+    const c=document.createElement('canvas');c.width=768;c.height=160;
+    const texture=new T.CanvasTexture(c),c2=c.getContext('2d');
+    function drawLabel(){
+      c2.clearRect(0,0,768,160);c2.fillStyle='#214c5ce8';c2.beginPath();c2.moveTo(28,4);c2.lineTo(740,4);c2.quadraticCurveTo(764,4,764,28);c2.lineTo(764,132);c2.quadraticCurveTo(764,156,740,156);c2.lineTo(28,156);c2.quadraticCurveTo(4,156,4,132);c2.lineTo(4,28);c2.quadraticCurveTo(4,4,28,4);c2.fill();
+      c2.textAlign='center';c2.fillStyle='#fff8df';c2.font='44px Jua, sans-serif';c2.fillText('0'+(i+1)+' '+l.name,384,68);c2.font='30px "Gowun Dodum", sans-serif';c2.fillText(i===5?'상생의 항로':l.reward+' 무역 코인',384,119);texture.needsUpdate=true;
+    }
+    drawLabel();document.fonts.ready.then(drawLabel);
+    const sprite=new T.Sprite(new T.SpriteMaterial({map:texture,transparent:true,depthTest:false}));sprite.position.set(0,70,-r*.35);sprite.scale.set(440/l.visualScale,92/l.visualScale,1);g.add(sprite);labelSprites.push(sprite);
   }
   window.LESSONS.forEach(island);
-  const ship=new T.Group();world.add(ship);
+  const ship=new T.Group();ship.scale.setScalar(CFG.boatScale);world.add(ship);
   const hull=ball(ship,'#9c633d',[0,8,0],[21,13,40]);
   const deck=ball(ship,'#ddb57d',[0,16,0],[18,4,35]);
   for(const x of [-17,17])box(ship,'#b9854e',[x,19,2],[3,9,52]);
@@ -196,7 +202,7 @@
   const wake=Array.from({length:24},()=>{const m=new T.Mesh(new T.TorusGeometry(10,.65,4,24),new T.MeshBasicMaterial({color:'#effff4',transparent:true,opacity:0,depthWrite:false}));m.rotation.x=-Math.PI/2;world.add(m);return m;});
   const wavelets=[];
   for(let i=0;i<105;i++){
-    const x=(i*719+83)%2500,z=(i*431+67)%2200;
+    const x=(i*719+83)%CFG.width,z=(i*431+67)%CFG.height;
     if(window.LESSONS.some(l=>Math.hypot(x-l.x,z-l.y)<l.r+28))continue;
     const points=[];for(let k=0;k<9;k++)points.push(new T.Vector3(k*4-16,1.5,z*0+Math.sin(k/8*Math.PI)*3));
     const line=new T.Line(new T.BufferGeometry().setFromPoints(points),new T.LineBasicMaterial({color:'#dcfff0',transparent:true,opacity:.24}));line.position.set(x,0,z);world.add(line);wavelets.push(line);
@@ -247,7 +253,7 @@
     if(++shadowTick%90===0)renderer.shadowMap.needsUpdate=true;
     if(api.mode==='world'){
       const halfW=width/zoom/2,halfH=height/zoom/2;worldCam.left=-halfW;worldCam.right=halfW;worldCam.top=halfH;worldCam.bottom=-halfH;worldCam.updateProjectionMatrix();
-      const off=height*.06/zoom/.74;worldCam.position.set(cam.x,720,cam.y+650-off);worldCam.lookAt(cam.x,0,cam.y-off);worldCam.updateMatrixWorld();
+      const off=height*.15/zoom/.74;worldCam.position.set(cam.x,720,cam.y+650-off);worldCam.lookAt(cam.x,0,cam.y-off);worldCam.updateMatrixWorld();
       const p=waterGeo.attributes.position;for(let k=0;k<p.count;k++){p.setY(k,baseWater[k*3+1]+Math.sin(baseWater[k*3]*.018+time)*.8+Math.cos(baseWater[k*3+2]*.016+time*1.2)*.6);}p.needsUpdate=true;
       ship.position.set(boat.x,Math.sin(time*2)*1.4,boat.y);ship.rotation.y=-boat.angle-Math.PI/2;ship.rotation.z=Math.sin(time*2)*.025;
       hull.material=mat(state.done.includes(5)?'#dcb958':state.upgrades.includes('hull')?'#468d95':'#9c633d');
@@ -255,8 +261,8 @@
       rings.forEach((r,i)=>{r.material.opacity=near===i?.75+Math.sin(time*3)*.2:.35;r.scale.setScalar(1+Math.sin(time*2+i)*.04);});
       while(chestObjects.length<treasures.length){const c=new T.Group();box(c,'#ae7d45',[0,5,0],[24,14,17]);const lid=cyl(c,'#d3a465',[0,13,0],12,12,18,8);lid.rotation.z=Math.PI/2;box(c,'#f7d67e',[0,11,9],[4,8,2]);world.add(c);chestObjects.push(c);}
       chestObjects.forEach((c,i)=>{c.visible=!state.treasures.includes(i);c.position.set(treasures[i].x,Math.sin(time*2+i)*2,treasures[i].y);c.rotation.z=Math.sin(time+i)*.08;});
-      wake.forEach((w,i)=>{const p=trail[trail.length-1-i*2];w.visible=!!p;if(p){w.position.set(p.x,1,p.y);w.scale.setScalar(1+(1-p.life)*2.8);w.material.opacity=p.life*.35;}});
-      seabirds.forEach((g,i)=>{g.position.set((time*22+i*363)%2500,110+Math.sin(time+i)*12,180+i*243);g.children.forEach((w,k)=>w.rotation.z=(k?1:-1)*(.15+Math.sin(time*4+i)*.35));});
+      wake.forEach((w,i)=>{const p=trail[trail.length-1-i*2];w.visible=!!p;if(p){w.position.set(p.x,1,p.y);w.scale.setScalar(CFG.boatScale*(1+(1-p.life)*2.8));w.material.opacity=p.life*.35;}});
+      seabirds.forEach((g,i)=>{g.position.set((time*22+i*763)%CFG.width,110+Math.sin(time+i)*12,(180+i*743)%CFG.height);g.children.forEach((w,k)=>w.rotation.z=(k?1:-1)*(.15+Math.sin(time*4+i)*.35));});
       wavelets.forEach((w,i)=>{w.position.y=Math.sin(time+i)*.5;w.material.opacity=.18+Math.sin(time*.7+i)*.09;});animateCharacter(captain,time,false);renderer.render(world,worldCam);
     }else{
       if(!document.body.classList.contains('art-fallback'))return;
@@ -270,5 +276,5 @@
       floating.forEach((p,i)=>{p.position.y+=Math.sin(time*.7+i)*.0015;});renderer.render(theatre,stageCam);
     }
   };
-  api.getDiagnostics=()=>({supported:true,scene:api.mode,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,characters:2,islands:islandGroups.length});
+  api.getDiagnostics=()=>({supported:true,scene:api.mode,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,characters:2,islands:islandGroups.length,boatScale:ship.scale.x,islandScale:CFG.islandScale});
 })();
